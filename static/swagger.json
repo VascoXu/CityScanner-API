@@ -1,0 +1,88 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "City Scanner API",
+    "description": "API for City Scanner."
+  },
+  "paths": {
+    "/api/datasets": {
+      "get": {
+        "tags": [
+          "Raw Data API"
+        ],
+        "description": "Gets a list of all available datasets.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of datasets."
+          }
+        }
+      }
+    },
+    "/api/latest": {
+      "get": {
+        "tags": [
+          "Raw Data API"
+        ],
+        "description": "Gets latest data from MongoDB.",
+        "parameters": [
+          {
+            "in": "query",
+            "type": "string",
+            "name": "dataset",
+            "description": "Dataset to retrieve from.",
+            "required": true
+          },
+          {
+            "in": "query",
+            "type": "string",
+            "name": "timezone",
+            "description": "Timezone of retrieved data (defaults to UTC).",
+            "required": false
+          },
+          {
+            "in": "query",
+            "type": "string",
+            "name": "limit",
+            "description": "Number of entries to retrieve.",
+            "required": false
+          },
+          {
+            "in": "query",
+            "type": "string",
+            "name": "start",
+            "description": "Start date in format YYYY-MM-DDT20HH:MM:SS.",
+            "required": false
+          },
+          {
+            "in": "query",
+            "type": "string",
+            "name": "end",
+            "description": "Endtart date in format YYYY-MM-DDT20HH:MM:SS.",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of data."
+          }
+        }
+      }
+    },
+    "/api/summary": {
+      "get": {
+        "tags": [
+          "Raw Data API"
+        ],
+        "description": "Gets a summary of datasets.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Summary of data."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,255 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Welcome to City Scanner API’s documentation! &mdash; City Scanner API  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home"> City Scanner API
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Welcome to City Scanner API’s documentation!</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">City Scanner API</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Welcome to City Scanner API’s documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-city-scanner-api-s-documentation">
+<h1>Welcome to City Scanner API’s documentation!<a class="headerlink" href="#welcome-to-city-scanner-api-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>City Scanner API provides programmatic access to City Scanner data via HTTP GET
+requests.</p>
+<dl class="http get">
+<dt id="get--raw_data_api-collections-">
+<code class="sig-name descname"><span class="pre">GET</span> </code><code class="sig-name descname"><span class="pre">/raw_data_api/collections/</span></code><a class="headerlink" href="#get--raw_data_api-collections-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a list of all available collections.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return</dt>
+<dd class="field-odd"><p>List of collections</p>
+</dd>
+<dt class="field-even">Rtype</dt>
+<dd class="field-even"><p>JSON</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt id="get--raw_data_api-summary-">
+<code class="sig-name descname"><span class="pre">GET</span> </code><code class="sig-name descname"><span class="pre">/raw_data_api/summary/</span></code><a class="headerlink" href="#get--raw_data_api-summary-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a summary of MongoDB collections.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return</dt>
+<dd class="field-odd"><p>Summary of data</p>
+</dd>
+<dt class="field-even">Rtype</dt>
+<dd class="field-even"><p>JSON</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt id="get--raw_data_api-latest-">
+<code class="sig-name descname"><span class="pre">GET</span> </code><code class="sig-name descname"><span class="pre">/raw_data_api/latest/</span></code><a class="headerlink" href="#get--raw_data_api-latest-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets latest data from MongoDB.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>collection</strong> (<em>str, required</em>) – Collection to retrieve from</p></li>
+<li><p><strong>limit</strong> (<em>int, optional</em>) – Number of entries to retrieve</p></li>
+<li><p><strong>start</strong> (<em>str, optional</em>) – Start date in format YYYY-MM-DDT20HH:MM:SS</p></li>
+<li><p><strong>end</strong> (<em>str, optional</em>) – End date in format YYYY-MM-DDT20HH:MM:SS</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return</dt>
+<dd class="field-even"><p>List of data</p>
+</dd>
+<dt class="field-odd">Rtype</dt>
+<dd class="field-odd"><p>JSON</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Vasco Xu.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

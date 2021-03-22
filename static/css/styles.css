@@ -1,0 +1,66 @@
+/* Stylize body */
+body
+{
+    font-family: 'Roboto', sans-serif;
+}
+
+.container
+{
+    max-width: 960px;
+}
+
+.container-title
+{
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* Stylize navbar */
+.navbar
+{
+    background-color: white;
+    border-bottom: 3px solid rgba(254, 95, 26, 0.65);
+}
+
+.nav-link
+{
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.navbar .navbar-brand .logo
+{
+    min-width: 125px;
+    min-height: 25px;
+}
+
+.time-label
+{
+    margin-bottom: 0;
+}
+
+#between-dates
+{
+    display: none;
+}
+
+#download-options
+{
+    width: 25%;
+}
+
+#success, #warning
+{
+    display: none;
+}
+
+#download-spinner
+{
+    display: none;
+}
+
+/* Remove URL definition from SwaggerUI */
+.swagger-ui .info hgroup.main a 
+{
+    display: none;
+}

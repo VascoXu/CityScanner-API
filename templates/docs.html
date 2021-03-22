@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <div class="container mt-5">
+        <!-- Title -->
+        <h2 class="container-title">City Scanner API</h2>
+
+        {% for doc in docs %}
+            <div class="content my-5">
+                <div class="alert alert-info" role="alert">
+                    <b>GET</b> {{ doc.route }}
+                </div>
+
+                <!-- Parameters Table -->
+                <h5>Parameters</h5>
+                <table class="table table-bordered table-sm">
+                    <thead>
+                        <tr class="bg-light">
+                            <th scope="col">Field</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for params in doc.params %}
+                            <tr>
+                                <td>{{ params.field }}</td>
+                                <td>{{ params.type }}</td>
+                                <td>{{ params.desc }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>            
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
