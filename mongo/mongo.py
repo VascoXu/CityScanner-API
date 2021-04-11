@@ -4,7 +4,7 @@ from datetime import datetime
 from pymongo import MongoClient, ASCENDING, DESCENDING
 from bson.json_util import dumps, default
 
-from helpers import string_to_datetime
+from helpers import string_to_datetime, valid_deviceID
 from mongo.mongo_helpers import *
 
 class MongoConnection:
@@ -75,18 +75,22 @@ class MongoConnection:
             col_name = collection.lower()
             if "_war" in col_name or "warnings" in col_name:
                 continue
-            
+
             count = self.db[collection].count_documents({}) # find number of datapoints
-            # devices = len(self.db[collection].distinct('deviceID')) # find number of devices
+            devices = list(self.db[collection].distinct('deviceID')) # find number of devices
             start = self.get_start_date(collection) # find start date
             end = self.get_end_date(collection) # find end date
+
+            # Cleanup devices list
+            devices = list(filter(valid_deviceID, devices))
 
             # Package data into a dict
             try:
                 summary.append({
                     'dataset': collection,
                     'start': list(start)[0]['time'],
-                    'end': list(end)[0]['time'], 
+                    'end': list(end)[0]['time'],
+                    'devices': len(devices),
                     'count': count
                 })            
             except:

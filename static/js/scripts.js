@@ -29,7 +29,7 @@ $(document).ready(function() {
     });
 
     // Update summary when selection is changed
-    $("datasets").on('change', function() {
+    $("#datasets").on('change', function() {
         update_summary(summaries);
     });
 
@@ -141,9 +141,10 @@ function update_summary(summaries)
     var timezone_text = $("#timezones option:selected").text();
     $(".timezone").text(timezone_text);
     $("#datapoints").text(result['count']);
-    // $("#devices").text(result['devices']);
+    $("#devices").text(result['devices']);
     $("#start").text(format_date(result['start'], timezone));
     $("#end").text(format_date(result['end'], timezone));    
+    $("#filename").val(dataset);
 }
 
 function download_csv(data, filename)

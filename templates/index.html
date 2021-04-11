@@ -28,7 +28,7 @@
                 <select class="form-control" id="timezones">
                     <option value="US/Eastern">Eastern Time (US & Canada)</option>
                     <option value="US/Mountain">Mountain Time (US & Canada)</option>
-                    <option value="Europe/Stockholm">Central Europan Time</option>
+                    <option value="Europe/Stockholm">Central European Time</option>
                     <option value="Asia/Almaty">East Kazakhstan Time</option>                  
                 </select>
             </div>
@@ -47,7 +47,7 @@
 
             <!-- Summary -->
             <small class="text-muted">Number of datapoints: <span id="datapoints">{{ summaries.0.count }}</span></small><br>
-            <!-- <small class="text-muted">Number of devices: <span id="devices">{{ summaries.0.devices }}</span></small><br> -->
+            <small class="text-muted">Number of devices: <span id="devices">{{ summaries.0.devices }}</span></small><br>
             <small class="text-muted">Start Date: <span id="start">{{ summaries.0.start | format_unix }}</span></small><br>
             <small class="text-muted">End Date: <span id="end">{{ summaries.0.end | format_unix }}</span></small><br>
             <small class="text-muted">*Above dates are displayed in <span class="timezone"></span></small><br>
@@ -70,6 +70,7 @@
                             Download Between Dates
                         </label>
                     </div>
+                    <small class="text-muted">*Dates selected in <span class="timezone"></span></small>
                 </div>
             </div>
 
@@ -93,7 +94,7 @@
             <!-- Filename -->
             <div>
                 <label for="filename">Please enter name of CSV file: </label><br>
-                <input type="text" class="form-control" id="filename" name="filename">
+                <input type="text" class="form-control" id="filename" name="filename" value="{{ summaries.0.dataset }}">
             </div>
 
             <br>

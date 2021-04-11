@@ -59,7 +59,7 @@
             "in": "query",
             "type": "string",
             "name": "end",
-            "description": "Endtart date in format YYYY-MM-DDT20HH:MM:SS.",
+            "description": "End date in format YYYY-MM-DDT20HH:MM:SS.",
             "required": false
           }
         ],
