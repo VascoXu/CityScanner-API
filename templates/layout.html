@@ -7,14 +7,13 @@
         <meta content="initial-scale=1, width=device-width" name="viewport"/>
 
         <!-- http://getbootstrap.com/ -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 
         <!-- http://jquery.com/ -->
-        <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="{{ url_for('static', filename='jquery/jquery-latest.min.js') }}"></script>
 
-        <!-- http://getbootstrap.com/ -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <!-- http://getbootstrap.com/ JS -->
+        <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
         
 		<!-- Google Fonts -->
 		<link rel="preconnect" href="https://fonts.gstatic.com">
@@ -25,7 +24,7 @@
         <script src="https://use.fontawesome.com/7b06c0b9b4.js"></script>
 
         <!-- https://momentjs.com/downloads/moment.js -->
-        <script src="https://momentjs.com/downloads/moment.js"></script>
+        <script src="{{ url_for('static', filename='moment/moment.js') }}"></script>
 
         <!-- App's own CSS -->
         <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">

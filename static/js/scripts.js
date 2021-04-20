@@ -75,8 +75,17 @@ $(document).ready(function() {
             success: function(data) {
                 hide_spinner();
                 
-                data = data['results'];
-                if (download_csv(data, filename)) {
+                if (!('error' in data)) {
+                    var url = data['url'];
+                    var filename = data['filename'];
+    
+                    // Download 
+                    var download_link = document.createElement('a');
+                    download_link.setAttribute('href', url);
+                    download_link.setAttribute('download', filename);
+                    download_link.click();
+                    download_link.remove();
+
                     // Display success message
                     display_success();
                 }

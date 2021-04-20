@@ -1,4 +1,6 @@
 import os
+import csv
+from io import StringIO, BytesIO
 
 from flask import Flask, flash, redirect, render_template, request, session, make_response, jsonify
 from flask_session import Session
@@ -6,6 +8,7 @@ from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 
 from mongo.mongo import *
+from s3 import upload_file,create_presigned_url
 from helpers import *
 
 # Configure application
@@ -129,11 +132,26 @@ def latest():
         }), 400)
 
     # Query MongoDB
-    result = mongodb.find(collection=collection, timezone=timezone, limit=limit, start=start, end=end)
-    response = {"results": list(result)}
+    rows = list(mongodb.find(collection=collection, timezone=timezone, limit=limit, start=start, end=end))
 
-    # Return a JSON response
-    return jsonify(response)
+    # Return error message if not data is available
+    if len(rows) == 0:
+        return jsonify({'error': "Error! Not data available."})
+
+    # Convert rows to StringIO and upload to Amazon S3
+    filename = f"{collection}.csv"
+    data = StringIO()
+    writer = csv.writer(data, delimiter=",")
+    writer.writerow(dict(rows[0]).keys())
+    for row in rows:
+        writer.writerow(dict(row).values())
+    upload_file(data, "scl-api", filename)
+
+    # Create presigned url
+    url = create_presigned_url("scl-api", filename)
+
+    # Return presigned url to access CSV
+    return jsonify({'url': url, 'filename': filename})
 
 
 @app.route("/api/summary/", methods=["GET"])
@@ -144,7 +162,11 @@ def summary():
     :rtype: JSON
     """
 
-    result = mongodb.summary()
+    # Parse GET parameters
+    params = request.args
+    collection = params.get("collection", None)
+
+    result = mongodb.summary(collection)
     response = {"results": result}
     return jsonify(response)
 

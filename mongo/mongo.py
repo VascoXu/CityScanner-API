@@ -63,11 +63,11 @@ class MongoConnection:
         return collections
 
     
-    def summary(self):
+    def summary(self, collection=None):
         """Summary of MongoDB collections"""
 
         # Query all available collections
-        collections = self.db.list_collection_names()
+        collections =  [collection] if collection else self.db.list_collection_names()
 
         summary = []
         for collection in collections:
