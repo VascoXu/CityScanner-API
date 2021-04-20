@@ -3,3 +3,4 @@ flask_session
 gunicorn
 pymongo[srv]
 pytz
+boto3
