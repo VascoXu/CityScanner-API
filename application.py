@@ -1,6 +1,8 @@
 import os
 import csv
 from io import StringIO, BytesIO
+from redis import Redis
+import rq
 
 from flask import Flask, flash, redirect, render_template, request, session, make_response, jsonify
 from flask_session import Session
@@ -16,6 +18,11 @@ app = Flask(__name__)
 
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
+
+# Setup Redis
+REDIS_URL = os.environ.get('REDIS_URL') or 'redis://localhost:6379'
+conn = Redis.from_url(REDIS_URL)
+task_queue = rq.Queue('scl-tasks', connection=conn)
 
 
 # Ensure responses aren't cached
@@ -38,6 +45,36 @@ Session(app)
 MONGO_URL = os.environ.get("MONGO_URL")
 MONGO_DB = os.environ.get("MONGO_DB")
 mongodb = MongoConnection(url=MONGO_URL, db=MONGO_DB)
+
+
+def export_csv(params):
+    """Generate CSV from MongoDB data and upload it to Amazon S3"""
+
+    # Unpack parameters
+    collection = params['collection']
+    timezone = params['timezone']
+    limit = params['limit']
+    start = params['start']
+    end = params['end']
+
+    # Query MongoDB
+    rows = list(mongodb.find(collection=collection, timezone=timezone, limit=limit, start=start, end=end))
+
+    # Return error message if not data is available
+    if len(rows) == 0:
+        return jsonify({'error': "Error! Not data available."})
+
+    # Convert rows to StringIO and upload to Amazon S3
+    filename = f"{collection}.csv"
+    data = StringIO()
+    writer = csv.writer(data, delimiter=",")
+    writer.writerow(dict(rows[0]).keys())
+    for row in rows:
+        writer.writerow(dict(row).values())
+    upload_file(data, "scl-api", filename)
+
+    # Create presigned url
+    url = create_presigned_url("scl-api", filename)
 
 
 @app.route("/", methods=["GET"])
@@ -105,6 +142,9 @@ def latest():
     start = params.get("start", None)
     end = params.get("end", None)
 
+    # Pack parameters into a dict
+    params = {'collection': collection, 'timezone': timezone, 'limit': limit, 'start': start, 'end': end}
+
     # Ensure start and end date are valid
     if start and end:
         first_date = list(mongodb.get_start_date(collection=collection))[0]['time']
@@ -131,27 +171,23 @@ def latest():
             "error": "Collection required."
         }), 400)
 
-    # Query MongoDB
-    rows = list(mongodb.find(collection=collection, timezone=timezone, limit=limit, start=start, end=end))
-
-    # Return error message if not data is available
-    if len(rows) == 0:
-        return jsonify({'error': "Error! Not data available."})
-
-    # Convert rows to StringIO and upload to Amazon S3
-    filename = f"{collection}.csv"
-    data = StringIO()
-    writer = csv.writer(data, delimiter=",")
-    writer.writerow(dict(rows[0]).keys())
-    for row in rows:
-        writer.writerow(dict(row).values())
-    upload_file(data, "scl-api", filename)
-
-    # Create presigned url
-    url = create_presigned_url("scl-api", filename)
+    # Launch background task to export CSV 
+    rq_job = task_queue.enqueue_call(func=export_csv,
+                                    args=(params,)
+                                    )
+    print(rq_job.get_id())                                    
 
     # Return presigned url to access CSV
-    return jsonify({'url': url, 'filename': filename})
+    return jsonify({'job_id': rq_job.get_id()})
+
+
+@app.route("/api/latest/<job_id>", methods=["GET"])
+def latest_results(job_id):
+    """ """
+
+    # Check if job is finished
+    rq_job = task_queue.fetch_job(job_id)
+    return jsonify({'result': rq_job.is_finished}) 
 
 
 @app.route("/api/summary/", methods=["GET"])

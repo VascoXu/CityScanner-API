@@ -80,11 +80,13 @@ $(document).ready(function() {
                     var filename = data['filename'];
     
                     // Download 
+                    /*
                     var download_link = document.createElement('a');
                     download_link.setAttribute('href', url);
                     download_link.setAttribute('download', filename);
                     download_link.click();
                     download_link.remove();
+                    */
 
                     // Display success message
                     display_success();
