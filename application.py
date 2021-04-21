@@ -76,6 +76,8 @@ def export_csv(params):
     # Create presigned url
     url = create_presigned_url("scl-api", filename)
 
+    return url
+
 
 @app.route("/", methods=["GET"])
 def index():
@@ -175,7 +177,6 @@ def latest():
     rq_job = task_queue.enqueue_call(func=export_csv,
                                     args=(params,)
                                     )
-    print(rq_job.get_id())                                    
 
     # Return presigned url to access CSV
     return jsonify({'job_id': rq_job.get_id()})
@@ -187,7 +188,11 @@ def latest_results(job_id):
 
     # Check if job is finished
     rq_job = task_queue.fetch_job(job_id)
-    return jsonify({'result': rq_job.is_finished}) 
+    if rq_job.is_finished:
+        url = rq_job.result
+        return jsonify({'url': url}) 
+    else:
+        return jsonify({'result': rq_job.is_finished}) 
 
 
 @app.route("/api/summary/", methods=["GET"])

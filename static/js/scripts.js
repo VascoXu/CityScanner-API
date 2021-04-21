@@ -72,24 +72,37 @@ $(document).ready(function() {
             url: '/api/latest',
             type: 'GET',
             data: data,
-            success: function(data) {
-                hide_spinner();
-                
+            success: function(data) {                
                 if (!('error' in data)) {
-                    var url = data['url'];
-                    var filename = data['filename'];
-    
-                    // Download 
-                    /*
-                    var download_link = document.createElement('a');
-                    download_link.setAttribute('href', url);
-                    download_link.setAttribute('download', filename);
-                    download_link.click();
-                    download_link.remove();
-                    */
+                    var job_id = data['job_id'];
 
-                    // Display success message
-                    display_success();
+                    // Poll the status of the download
+                    function pollLatestData() {
+                        $.ajax({
+                            url: `/api/latest/${job_id}`,
+                            type: 'GET',
+                            async: false,
+                            success: function(data) {
+                                if ('url' in data) {
+                                    var url = data['url'];
+                                    // Download CSV from Amazon S3
+                                    var download_link = document.createElement('a');
+                                    download_link.setAttribute('href', url);
+                                    download_link.setAttribute('download', filename);
+                                    download_link.click();
+                                    download_link.remove();
+                                    
+                                    // Display success message
+                                    hide_spinner();
+                                    display_success();
+                                }
+                                else {
+                                    setTimeout(pollLatestData, 1000);
+                                }
+                            },
+                        });
+                    }
+                    pollLatestData();
                 }
                 else {
                     // Display error message
