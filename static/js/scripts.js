@@ -75,7 +75,7 @@ $(document).ready(function() {
             success: function(data) {
                 hide_spinner();
                 
-                data = data['results']
+                // data = data['results'];
                 if (download_csv(data, filename)) {
                     // Display success message
                     display_success();
@@ -127,7 +127,7 @@ $(document).ready(function() {
                 hide_spinner();
 
                 // Display error message
-                var error_message = xhr.responseJSON['error'];
+                var error_message = xhr.responseJSON['error'] || "Download failed!";
                 display_error(error_message);
             }
         });
@@ -187,6 +187,7 @@ function update_summary(summaries)
 
 function download_csv(data, filename)
 {
+    /*
     // Error checking
     if (data.length == 0) {
         return false;
@@ -197,11 +198,12 @@ function download_csv(data, filename)
     var csv = [
         headers.join(','),
         ...data.map(row => headers.map(field => JSON.stringify(row[field])).join(','))
-    ].join('\r\n')
+    ].join('\r\n');
+    */
     
     // Download CSV
     var link = document.createElement("a");
-    var blob = new Blob([csv], {type: "data:file/csv;charset=utf-8;"})
+    var blob = new Blob([data], {type: "data:file/csv;charset=utf-8;"})
     link.setAttribute("href", URL.createObjectURL(blob));
     link.setAttribute("download", filename);
     document.body.appendChild(link);

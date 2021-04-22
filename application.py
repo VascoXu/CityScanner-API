@@ -1,4 +1,5 @@
 import os
+import sys
 import csv
 from io import StringIO, BytesIO
 from redis import Redis
@@ -174,14 +175,15 @@ def latest():
         }), 400)
 
     # Query MongoDB
-    rows = list(mongodb.find(collection=collection, timezone=timezone, limit=limit, start=start, end=end))
-
+    rows = mongodb.find(collection=collection, timezone=timezone, limit=limit, start=start, end=end)
+    
     # Return error message if not data is available
+    """
     if len(rows) == 0:
         return jsonify({'error': "Error! Not data available."})
+    """
 
     # Convert rows to StringIO and upload to Amazon S3
-    """
     filename = f"{collection}.csv"
     data = StringIO()
     writer = csv.writer(data, delimiter=",")
@@ -192,13 +194,6 @@ def latest():
     res.headers['Content-Disposition'] = "attachment; filename=test.csv"
     res.headers['Content-type'] = "text/csv"
     return res
-    """
-
-    # Query MongoDB
-    response = {"results": list(rows)}
-
-    # Return a JSON response
-    return jsonify(response)
 
     # Convert rows to StringIO and upload to Amazon S3
     """
