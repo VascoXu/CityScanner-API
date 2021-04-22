@@ -4,7 +4,7 @@ from io import StringIO, BytesIO
 from redis import Redis
 import rq
 
-from flask import Flask, flash, redirect, render_template, request, session, make_response, jsonify
+from flask import Flask, flash, redirect, render_template, request, session, make_response, jsonify, Response
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
@@ -113,7 +113,7 @@ def datasets():
     return jsonify(response)
 
 
-@app.route("/api/latest/", methods=["GET"])
+@app.route("/api/latest/", methods=["GET", "POST"])
 def latest():
     """Gets latest data from MongoDB.
 
@@ -173,13 +173,51 @@ def latest():
             "error": "Collection required."
         }), 400)
 
+    # Query MongoDB
+    rows = list(mongodb.find(collection=collection, timezone=timezone, limit=limit, start=start, end=end))
+
+    # Return error message if not data is available
+    if len(rows) == 0:
+        return jsonify({'error': "Error! Not data available."})
+
+    # Convert rows to StringIO and upload to Amazon S3
+    """
+    filename = f"{collection}.csv"
+    data = StringIO()
+    writer = csv.writer(data, delimiter=",")
+    writer.writerow(dict(rows[0]).keys())
+    for row in rows:
+        writer.writerow(dict(row).values())
+    res = make_response(data.getvalue())
+    res.headers['Content-Disposition'] = "attachment; filename=test.csv"
+    res.headers['Content-type'] = "text/csv"
+    return res
+    """
+
+    # Query MongoDB
+    response = {"results": list(rows)}
+
+    # Return a JSON response
+    return jsonify(response)
+
+    # Convert rows to StringIO and upload to Amazon S3
+    """
+    def generate_csv():
+        for row in rows:
+            yield ','.join(str(c) for c in dict(row).values()) + '\n'
+            
+    return Response(generate_csv(), mimetype='text/csv')
+    """
+
+    """
     # Launch background task to export CSV 
     rq_job = task_queue.enqueue_call(func=export_csv,
                                     args=(params,)
                                     )
+    """
 
     # Return presigned url to access CSV
-    return jsonify({'job_id': rq_job.get_id()})
+    # return jsonify({'job_id': rq_job.get_id()})
 
 
 @app.route("/api/latest/<job_id>", methods=["GET"])

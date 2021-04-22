@@ -29,9 +29,6 @@
         <!-- App's own CSS -->
         <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
 
-        <!-- App's own Javascript -->
-        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
-
         {% block head %}{% endblock %}
     </head>
     <body>
@@ -56,5 +53,8 @@
 
     	{% block body %}
         {% endblock %}
+
+        <!-- App's own Javascript -->
+        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
     </body>
 </html>
