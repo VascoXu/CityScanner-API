@@ -59,11 +59,7 @@ def export_csv(params):
     end = params['end']
 
     # Query MongoDB
-    rows = list(mongodb.find(collection=collection, timezone=timezone, limit=limit, start=start, end=end))
-
-    # Return error message if not data is available
-    if len(rows) == 0:
-        return jsonify({'error': "Error! Not data available."})
+    rows = mongodb.find(collection=collection, timezone=timezone, limit=limit, start=start, end=end)
 
     # Convert rows to StringIO and upload to Amazon S3
     filename = f"{collection}.csv"
@@ -173,19 +169,7 @@ def latest():
         return make_response(jsonify({
             "error": "Collection required."
         }), 400)
-
-    # Query MongoDB
-    rows = mongodb.find(collection=collection, timezone=timezone, limit=limit, start=start, end=end)
-    
-
-    # Convert rows to StringIO and upload to Amazon S3
-    filename = f"{collection}.csv"
-    data = StringIO()
-    writer = csv.writer(data, delimiter=",")
-    writer.writerow(dict(rows[0]).keys())
-    for row in rows:
-        writer.writerow(dict(row).values())
-    
+        
     """
     # Create response from StringIO output
     res = make_response(data.getvalue())
