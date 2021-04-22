@@ -177,11 +177,6 @@ def latest():
     # Query MongoDB
     rows = mongodb.find(collection=collection, timezone=timezone, limit=limit, start=start, end=end)
     
-    # Return error message if not data is available
-    """
-    if len(rows) == 0:
-        return jsonify({'error': "Error! Not data available."})
-    """
 
     # Convert rows to StringIO and upload to Amazon S3
     filename = f"{collection}.csv"
@@ -190,29 +185,21 @@ def latest():
     writer.writerow(dict(rows[0]).keys())
     for row in rows:
         writer.writerow(dict(row).values())
+    
+    """
+    # Create response from StringIO output
     res = make_response(data.getvalue())
     res.headers['Content-Disposition'] = "attachment; filename=test.csv"
     res.headers['Content-type'] = "text/csv"
-    return res
-
-    # Convert rows to StringIO and upload to Amazon S3
-    """
-    def generate_csv():
-        for row in rows:
-            yield ','.join(str(c) for c in dict(row).values()) + '\n'
-            
-    return Response(generate_csv(), mimetype='text/csv')
     """
 
-    """
     # Launch background task to export CSV 
     rq_job = task_queue.enqueue_call(func=export_csv,
                                     args=(params,)
                                     )
-    """
 
-    # Return presigned url to access CSV
-    # return jsonify({'job_id': rq_job.get_id()})
+    # Return job id to client
+    return jsonify({'job_id': rq_job.get_id()})
 
 
 @app.route("/api/latest/<job_id>", methods=["GET"])

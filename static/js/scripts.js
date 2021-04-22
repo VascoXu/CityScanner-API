@@ -72,19 +72,7 @@ $(document).ready(function() {
             url: '/api/latest',
             type: 'GET',
             data: data,
-            success: function(data) {
-                hide_spinner();
-                
-                // data = data['results'];
-                if (download_csv(data, filename)) {
-                    // Display success message
-                    display_success();
-                }
-                else {
-                    // Display error message
-                    display_error("No data available.");
-                }      
-                /*        
+            success: function(data) {  
                 if (!('error' in data)) {
                     var job_id = data['job_id'];
 
@@ -109,7 +97,7 @@ $(document).ready(function() {
                                     display_success();
                                 }
                                 else {
-                                    setTimeout(pollLatestData, 1000);
+                                    setTimeout(pollLatestData, 2000);
                                 }
                             },
                         });
@@ -120,8 +108,6 @@ $(document).ready(function() {
                     // Display error message
                     display_error("No data available.");
                 }
-                */
-
             },
             error: function(xhr, status, error) {
                 hide_spinner();
