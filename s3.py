@@ -39,7 +39,7 @@ def upload_file(stream, bucket, object_name=None):
     s3_client = boto3.client('s3')
 
     # Set expiration of object to 30 minutes
-    expiration = datetime.now() + timedelta(minutes=30)
+    expiration = datetime.utcnow() + timedelta(minutes=30)
     try:
         response = s3_client.upload_fileobj(buffer, bucket, object_name,
                                             ExtraArgs={'Expires': expiration})

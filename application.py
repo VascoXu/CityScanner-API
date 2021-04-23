@@ -63,7 +63,7 @@ def export_csv(params):
     rows = mongodb.find(collection=collection, timezone=timezone, limit=limit, start=start, end=end)
 
     # Convert rows to StringIO and upload to Amazon S3
-    object_name = f"{collection}{start}{end}.csv" if (start or end) else f"{collection}"
+    object_name = f"{collection}{start}{end}.csv" if (start or end) else f"{collection}.csv"
     data = StringIO()
     writer = csv.writer(data, delimiter=",")
     writer.writerow(dict(rows[0]).keys())
