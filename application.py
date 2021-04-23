@@ -53,6 +53,7 @@ def export_csv(params):
 
     # Unpack parameters
     collection = params['collection']
+    filename = params['filename']
     timezone = params['timezone']
     limit = params['limit']
     start = params['start']
@@ -62,16 +63,16 @@ def export_csv(params):
     rows = mongodb.find(collection=collection, timezone=timezone, limit=limit, start=start, end=end)
 
     # Convert rows to StringIO and upload to Amazon S3
-    filename = f"{collection}.csv"
+    object_name = f"{collection}{start}{end}.csv" if (start or end) else f"{collection}"
     data = StringIO()
     writer = csv.writer(data, delimiter=",")
     writer.writerow(dict(rows[0]).keys())
     for row in rows:
         writer.writerow(dict(row).values())
-    upload_file(data, "scl-api", filename)
+    upload_file(data, "scl-api", object_name)
 
     # Create presigned url
-    url = create_presigned_url("scl-api", filename)
+    url = create_presigned_url("scl-api", object_name, filename)
 
     return url
 
@@ -133,16 +134,17 @@ def latest():
     :rtype: JSON
     """
 
-    # Parse GET parameters
-    params = request.args
+    # Parse parameters
+    params = request.get_json() if request.method == "POST" else request.args
     collection = params.get("dataset", None)
+    filename = params.get("filename", None)
     timezone = params.get("timezone", None)
     limit = params.get("limit", None)
     start = params.get("start", None)
     end = params.get("end", None)
 
     # Pack parameters into a dict
-    params = {'collection': collection, 'timezone': timezone, 'limit': limit, 'start': start, 'end': end}
+    params = {'collection': collection, 'filename': filename, 'timezone': timezone, 'limit': limit, 'start': start, 'end': end}
 
     # Ensure start and end date are valid
     if start and end:
@@ -177,26 +179,43 @@ def latest():
     res.headers['Content-type'] = "text/csv"
     """
 
-    # Launch background task to export CSV 
-    rq_job = task_queue.enqueue_call(func=export_csv,
-                                    args=(params,)
-                                    )
+    if request.method == "POST":
+        # Launch background task to export CSV 
+        rq_job = task_queue.enqueue_call(func=export_csv,
+                                        args=(params,)
+                                        )
+        # Return job id to client    
+        return jsonify({'job_id': rq_job.get_id()})
+    elif request.method == "GET":
+        # Query MongoDB
+        rows = mongodb.find(collection=collection, timezone=timezone, limit=limit, start=start, end=end)
 
-    # Return job id to client
-    return jsonify({'job_id': rq_job.get_id()})
+        # Generate list of rows
+        res = []
+        for row in rows:
+            res.append(row)
+        
+        return jsonify({'results': res})
+
 
 
 @app.route("/api/latest/<job_id>", methods=["GET"])
 def latest_results(job_id):
-    """ """
+    """Poll status of requested job"""
 
-    # Check if job is finished
+    # Fetch requested job
     rq_job = task_queue.fetch_job(job_id)
+
+    # Check if job has failed
+    if rq_job.get_status() == 'failed':
+        return jsonify({'error': "Job has failed!"})
+
+    # Check if job has finished
     if rq_job.is_finished:
         url = rq_job.result
         return jsonify({'url': url}) 
     else:
-        return jsonify({'result': rq_job.is_finished}) 
+        return jsonify({'result': rq_job.is_finished})
 
 
 @app.route("/api/summary/", methods=["GET"])

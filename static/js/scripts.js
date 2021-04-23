@@ -66,12 +66,15 @@ $(document).ready(function() {
             filename = dataset;
         } 
         filename = `${filename}.csv`;
-
+        data['filename'] = filename;
+    
         // Send request for latest data
         $.ajax({
-            url: '/api/latest',
-            type: 'GET',
-            data: data,
+            url: '/api/latest/',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            dataType: 'json',
             success: function(data) {  
                 if (!('error' in data)) {
                     var job_id = data['job_id'];
@@ -95,6 +98,12 @@ $(document).ready(function() {
                                     // Display success message
                                     hide_spinner();
                                     display_success();
+                                }
+                                else if ('error' in data) {
+                                    hide_spinner();
+                                    
+                                    // Display error message
+                                    display_error("Request has failed. Please try again!");
                                 }
                                 else {
                                     setTimeout(pollLatestData, 2000);
