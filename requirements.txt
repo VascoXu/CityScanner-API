@@ -5,3 +5,5 @@ pymongo[srv]
 pytz
 boto3
 rq
+geojson
+mapbox

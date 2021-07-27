@@ -5,7 +5,7 @@ from io import StringIO, BytesIO
 from redis import Redis
 import rq
 
-from flask import Flask, flash, redirect, render_template, request, session, make_response, jsonify, Response
+from flask import Flask, flash, redirect, render_template, request, session, make_response, jsonify, Response, url_for
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
@@ -13,6 +13,7 @@ from werkzeug.exceptions import default_exceptions, HTTPException, InternalServe
 from mongo.mongo import *
 from s3 import upload_file,create_presigned_url
 from helpers import *
+from hotspots import *
 
 # Configure application
 app = Flask(__name__)
@@ -79,16 +80,72 @@ def export_csv(params):
 
 @app.route("/", methods=["GET"])
 def index():
-    """Home page for interacting with the API"""
+    """Home page"""
 
-    summaries = list(mongodb.summary())
-    return render_template("index.html", summaries=summaries)
+    return render_template("index.html")
+
+
+@app.route("/data", methods=["GET"])
+def data():
+    """Data page for downloading data"""
+
+    return render_template("data.html")
+
+
+# @app.route("/map", methods=["GET"])
+# def map():
+#     """Street-level map"""
+
+#     return render_template("map.html")
+
+
+@app.route("/hotspots", methods=["GET"])
+def hotspot():
+    """Page for calculating hotspots"""
+
+    return render_template("hotspots.html")
 
 
 @app.route("/docs", methods=["GET"])
 def docs():
     """Home page for API documentation"""
     return render_template("swaggerui.html")
+
+
+@app.route("/api/hotspots/", methods=["GET", "POST"])
+def hotspots_api():
+    """Hotspots"""
+
+    params = request.get_json() if request.method == "POST" else request.args
+    collection = params.get("dataset", None)
+    timezone = params.get("timezone", None)
+    start = params.get("start", None)
+    end = params.get("end", None)
+
+    # Set timezone
+    if timezone:
+        tz = pytz.timezone('US/Eastern')
+
+    # Query MongoDB
+    rows = mongodb.find(collection=collection, timezone=timezone, start=start, end=end)
+
+    # Generate list of rows
+    res = []
+    for row in rows:
+        res.append(row)
+    data = pd.DataFrame(res)
+
+    # Calculate hotspots
+    calculate_hotspots(data)
+
+    return jsonify({'redirect': url_for("example")})
+
+
+@app.route("/example")
+def example():
+    """Hotspots"""
+
+    return render_template("foliumHotspotMap.html")
 
 
 @app.route("/api/datasets/", methods=["GET"])
@@ -196,7 +253,6 @@ def latest():
             res.append(row)
         
         return jsonify({'results': res})
-
 
 
 @app.route("/api/latest/<job_id>", methods=["GET"])

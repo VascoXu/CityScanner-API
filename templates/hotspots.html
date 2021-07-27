@@ -1,0 +1,109 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <div class="container mt-5">
+        <!-- Loading spinner -->
+        <div class="text-center" id="loading">
+            <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">                
+                <span class="sr-only">Loading...</span>
+            </div>
+            <br>
+            Loading content...
+        </div>
+
+        <div id="content">
+            <!-- Warning Alert -->
+            <div class="alert alert-danger alert-dismissible fade show" id="warning" role="alert">
+                <p class="mb-0 warning-text"></p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>        
+            </div>
+
+            <!-- Success Alert -->
+            <div class="alert alert-success alert-dismissible fade show" id="success" role="alert">
+                <p class="mb-0">Data successfully downloaded!</p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Title -->
+            <h2 class="container-title">Hotspots</h2>
+            
+            <div class="content mt-4">            
+                <!-- Select Dropdown -->
+                <div class="dropbown">
+                    <label for="datasets">Please select a CS pilot: </label>
+                    <select class="form-control" id="datasets">
+                    </select>
+                </div>
+
+                <br>
+
+                <!-- Select timezone -->
+                <div>
+                    <label for="timezones">Please select a timezone: </label>
+                    <select class="form-control" id="timezones">
+                        <option value="US/Eastern">Eastern Time (US & Canada)</option>
+                        <option value="US/Mountain">Mountain Time (US & Canada)</option>
+                        <option value="Europe/Stockholm">Central European Time</option>
+                        <option value="Asia/Almaty">East Kazakhstan Time</option>                  
+                    </select>
+                </div>            
+                
+                <br>
+
+                <!-- Select options -->
+                <div id="download-options">
+                    <label for="options"><b>Select Options: </b></label>
+                    <div class="form-group" id="options">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="exampleRadios" id="select-all" value="all" checked>
+                            <label class="form-check-label" for="select-all">
+                                Select All Datapoints
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="exampleRadios" id="select-between" value="between">
+                            <label class="form-check-label" for="select-between">
+                                Select Between Dates
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id ="between-dates">
+                    <!-- Select start time -->
+                    <div>
+                        <label for="start-time" class="time-label">Select start time: </label>
+                        <br>
+                        <input type="datetime-local" id="start-time" max="9999-12-31T23:59" name="start-time">
+                    </div>
+                    <br>
+                    <!-- Select end time -->
+                    <div>
+                        <label for="end-time" class="time-label">Select end time: </label>
+                        <br>
+                        <input type="datetime-local" id="end-time" max="9999-12-31T23:59" name="end-time">
+                    </div>
+                    <br>
+                </div>
+
+                <div class="mb-3">
+                    <!-- Loading -->
+                    <button class="btn btn-primary" id="download-button" type="button">
+                        <span class="spinner-border spinner-border-sm mr-1" id="download-spinner" role="status" aria-hidden="true"></span>
+                        <span id="calculate-text">Calculate Hotspots</span>
+                    </button>
+                </div>
+
+                <a class="btn btn-light" href="#" target="_blank" id="hotspots" role="button">Open Hotstop Map</a>
+            </div>
+        </div>
+    </div>
+
+    {% block scripts %}
+        <script src="{{ url_for('static', filename='js/hotspots.js') }}"></script>
+    {% endblock %}
+{% endblock %}

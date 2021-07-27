@@ -5,7 +5,13 @@ from botocore.exceptions import ClientError
 from datetime import datetime,timedelta
 
 def create_presigned_url(bucket_name, object_name, file_name, expiration=3600):
-    """Generate a presigned URL to share an S3 object"""
+    """Generate a presigned URL to share an S3 object
+
+    :param bucket_name: string
+    :param object_name: string
+    :param expiration: Time in seconds for the presigned URL to remain valid
+    :return: Presigned URL as string. If error, returns None.
+    """
     
     S3_BUCKET = os.environ.get('S3_BUCKET')
     s3_client = boto3.client('s3')
@@ -27,10 +33,6 @@ def create_presigned_url(bucket_name, object_name, file_name, expiration=3600):
 
 def upload_file(stream, bucket, object_name=None):
     """Upload a stream to an S3 bucket"""
-
-    # If S3 object_name was not specified, use file_name
-    if object_name is None:
-        object_name = file_name
 
     # Convert StringIO to BytesIO
     buffer = BytesIO(stream.getvalue().encode('utf-8'))

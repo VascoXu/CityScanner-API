@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <div>
+        <div id="map"></div>
+        <div class='selectedSegment'>
+            Selected Segment:
+            <hr>
+            <div><strong>Left Coordinate:</strong> <span id='p1'></span></div>
+            <div><strong>Right Coordinate:</strong> <span id='p2'></span></div>
+            <div><strong>Segment ID:</strong> <span id='id'></span></div>
+        </div>
+    </div>
+    {% block scripts %}
+        <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+    {% endblock %}
+{% endblock %}

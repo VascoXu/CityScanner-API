@@ -20,6 +20,10 @@
         <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+        <!-- Mapbox -->
+        <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+        <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet'/>
+
         <!-- FontAwesome -->
         <script src="https://use.fontawesome.com/7b06c0b9b4.js"></script>
 
@@ -32,7 +36,7 @@
         {% block head %}{% endblock %}
     </head>
     <body>
-		<nav class="navbar navbar-expand-lg navbar-light">
+		<nav class="navbar navbar-expand-lg fixed-top navbar-light">
 			<a class="navbar-brand" href="/">
 				<img class="logo" src="{{ url_for('static', filename='img/senseable_logo.svg') }}" alt="Senseable City Lab Logo">
 			</a>
@@ -45,6 +49,15 @@
                         <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item active">
+                        <a class="nav-link" href="/data">Data</a>
+                    </li>                    
+                    <!-- <li class="nav-item active">
+                        <a class="nav-link" href="/map">Map</a>
+                    </li> -->
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/hotspots">Hotspots</a>
+                    </li>
+                    <li class="nav-item active">
                         <a class="nav-link" href="/docs">API Docs</a>
                     </li>
                 </ul>
@@ -55,6 +68,8 @@
         {% endblock %}
 
         <!-- App's own Javascript -->
-        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/general.js') }}"></script>
+        {% block scripts %}
+        {% endblock %}
     </body>
 </html>
