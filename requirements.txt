@@ -7,3 +7,10 @@ boto3
 rq
 geojson
 mapbox
+pandas
+matplotlib
+numpy
+folium
+shapely
+scikit-learn
+geopy
