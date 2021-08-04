@@ -163,7 +163,6 @@ function hide_spinner()
 function load_summary(summaries)
 {
     for (let i = 0; i < summaries.length; i++) {
-        console.log(summaries[i].dataset)
         $("#datasets").append(new Option(summaries[i].dataset, summaries[i].dataset));
     }
 }

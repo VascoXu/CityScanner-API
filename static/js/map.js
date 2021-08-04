@@ -39,7 +39,6 @@ map.on('load', function () {
     let average_color = {};
     Object.assign(average_color, colors);
     average_color.property = "average"+average_color.property;
-    console.log(average_color.property);
 
     map.addLayer({
         id: "nyc",
